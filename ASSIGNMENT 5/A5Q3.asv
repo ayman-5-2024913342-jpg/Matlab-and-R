@@ -1,0 +1,40 @@
+clc 
+close all 
+clear all 
+
+a = -2.0;
+b = 2;
+tol = 10^(-5);
+i = 0;
+rel = 1;
+
+[i,a,b,tol,rel] = MAIN(i,a,b,tol,rel);
+
+function [i,a,b,tol,rel] = MAIN(i,a,b,tol,rel)
+    fprintf("i  a           b            c             f(c)           Rel\n")
+
+    while rel > tol
+        i = i + 1;
+        
+        fa = A_FUNC(a);
+        fb = A_FUNC(b);
+        
+        t = b - fb * (b - a) / (fb - fa);
+
+        if A_FUNC(t) == 0
+           fprintf("Root found %0.5f\n", t)
+           break;
+        end
+
+        rel = abs(t - b); 
+
+        fprintf("%d  %0.5f  %0.5f  %0.5f  %0.5f  %f \n", i, a, b, t, A_FUNC(t), rel)
+
+        a = b;
+        b = t;
+    end
+end
+
+function f = A_FUNC(x)
+    f = 54*x^6 + 45*x^5 + - 102*x^4 + 35*x^2 + 16*x -4; 
+end 

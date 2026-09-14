@@ -1,0 +1,64 @@
+clc
+close all
+clear all
+format bank
+
+NYC = [33 33 18 29 40 55 19 22 32 37 58 54 51 52 45 41 45 39 36 45 33 18 19 19 28 34 44 21 23 30 39];
+DEN = [39 48 61 39 14 37 43 38 46 39 55 46 46 39 54 45 52 52 62 45 62 40 25 57 60 57 20 32 50 48 28];
+
+avg_nyc = (sum(NYC)/length(NYC));
+avg_den = (sum(DEN)/length(DEN));
+
+disp("===========part a====================")
+fprintf("The avg temp of NYC %0.2f \n",avg_nyc);
+fprintf("The avg temp of DEN %0.2f \n",avg_den);
+
+disp("===========part b====================")
+cnt_nyc = count(NYC, DEN, avg_nyc, "A");
+cnt_den = count(NYC, DEN, avg_den, "A");
+
+fprintf("Desired num of days in NYC %d \n",cnt_nyc);
+fprintf("Desired num of days in DEN %d \n",cnt_den);
+
+disp("===========part c====================")
+cnt_days = count(NYC, DEN, 0, "B");
+
+fprintf("The number of days: %d\n", cnt_days)
+
+function cnt = count(arr1, arr2, threshold, param)
+    cnt = 0;
+    
+    if param == "A"
+        for i = 1:length(arr1)
+            if arr1(i) > threshold
+                cnt = cnt + 1;
+            end
+        end
+    end
+    
+    if param == "B"    
+        for i = 1:length(arr1)
+            if arr1(i) < arr2(i)
+                cnt = cnt + 1;
+            end
+        end
+    end
+end
+
+%function cnt = count_above(arr, threshold)
+%    cnt = 0;
+%    for i = 1:length(arr)
+%        if arr(i) > threshold
+%            cnt = cnt + 1;
+%        end
+%    end
+%end
+
+%function cnt = count_less_than(arr1, arr2)
+%    cnt = 0;
+%    for i = 1:length(arr1)
+%        if arr1(i) < arr2(i)
+%            cnt = cnt + 1;
+%        end
+%    end
+%end

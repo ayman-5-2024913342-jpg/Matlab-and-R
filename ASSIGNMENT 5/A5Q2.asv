@@ -1,0 +1,17 @@
+clc 
+close all
+clear all
+
+function f = the_func(arg)
+    
+    x_old = f(arg);
+    df = diff(f(x), x);
+    
+    x_new = x_old - f(x_old)/df;
+    f_new = f(x_new);
+    fprintf("%0.5f %0.5f",x_old, df, x_new, f_new);
+end
+
+function y = f(x)
+    y = 1/2 + 1/4*x^2 - x*sin(x) - 1/2*cos(2*x)
+end

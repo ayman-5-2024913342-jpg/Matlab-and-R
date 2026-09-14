@@ -1,0 +1,7 @@
+month    hunidity(%) 	Wind Speed(km/h)	Rainfall(mm)
+Jan      65 		12			15
+Feb      68		10			20
+Mar      72		14			45
+Apr      78		16			110
+May      82		18			180
+Jun      85		20			220

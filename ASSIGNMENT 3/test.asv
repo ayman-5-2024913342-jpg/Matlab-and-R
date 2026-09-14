@@ -1,0 +1,12 @@
+clc; close all; clear all;
+
+player_cnt = 0;
+
+board = [ 0 0 0; 0 0 0; 0 0 0; ]
+
+for i = 1:3
+    for j = 1:3
+        fprintf("[0] ")
+    end
+        disp(" ")
+end
