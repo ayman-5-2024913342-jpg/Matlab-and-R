@@ -52,3 +52,6 @@ end
 function y_fdashprime = df_(x)
     y_dashprime = -1 * x * sin(x) + cos(x) -4*x + 3; 
 end
+
+%==== to do =====
+%matlabfunction

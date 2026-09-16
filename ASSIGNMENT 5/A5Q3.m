@@ -10,6 +10,7 @@ rel = 1;
 
 f_ = @(x) 54*x.^6 + 45*x.^5 + - 102*x.^4 -69*x.^3 + 35*x.^2 + 16*x -4; 
 exact_val = roots(f_)
+
 fplot(f_, [-5, 5])
 yline(0, '--r', 'LineWidth', 1.5) 
 
