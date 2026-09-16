@@ -10,6 +10,8 @@ for i = 1:3
     the_func(arg)
     fprintf("\n\n")
 end
+%arg = 0.1
+%the_func(arg)
 
 function the_func(arg)
     for i=1:1000
@@ -40,4 +42,13 @@ end
 
 function y_prime = df(x)
     y_prime = x/2 - sin(x) - x*cos(x) + sin(2*x);
+end
+
+
+function y_ = f_(x)
+    f = x * cos(x) - 2*x^2 + 3*x - 1; 
+end 
+
+function y_fdashprime = df_(x)
+    y_dashprime = -1 * x * sin(x) + cos(x) -4*x + 3; 
 end

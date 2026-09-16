@@ -2,8 +2,6 @@ clc
 close all 
 clear all 
 
-% 1. Choose values greater than 1 because log(x-1) requires x > 1
-% f(1.1) is negative, f(2) is positive -> Valid bracket!
 a = 1.3; 
 b = 2.0; 
 tol = 10^(-5);
