@@ -16,11 +16,9 @@ x_exact = R(:, end)
 A_dom (max_cols,:) = A;
 b_dom (max_cols) = b;
 
-ns = jacobi(A, b, zeros(size(b)), 100);   % <- the one fix you need (see below)
-n = numel(ns);
-
-for k = 1:n, fprintf('%10s', sprintf('x%d', k)); end
-fprintf('\n');
+%ns = jacobi(A, b, zeros(size(b)), 100);   % <- the one fix you need (see below)
+%n = numel(ns);
+jacobi(A,b, 0, 100)
 
 function [x, iter, err] = jacobi(A, b, x0, max_iter)
     tol = 10^-5;
