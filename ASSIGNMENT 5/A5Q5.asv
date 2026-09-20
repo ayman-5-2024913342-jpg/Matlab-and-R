@@ -88,14 +88,7 @@ function [iter, x, err, table_data] = gauss_sed(A, b, x0, max_iter)
 end
 
 %============================== Part IV %==================================
-x = [0; 0; 0; 0; 0;];
-
-[x, iter, err, table_data] = sor_(A, b, x, 1.2, 700);
-
-T = array2table(table_data, 'VariableNames', {'iteration','x1','x2','x3','x4','x5', 'error'});
-disp(T);
-disp("The solution ")
-disp(x)
+sor_(A, b, x, 1.2, 400)
 
 
 function [x, iter, err, table_data] = sor_(A, b, x0, w, max_iter)
