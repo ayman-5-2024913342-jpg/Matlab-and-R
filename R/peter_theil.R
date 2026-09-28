@@ -5,7 +5,7 @@ temp.ts = ts(temp, start=c(2025, 1), frequency=12)
 temp.ts
 
 plot(temp.ts, xlab="year", ylab="Temperature", main="monthly average temperature")
-temp1 = temp+0.2
+temp1 = temp+0.02
 temp1
 
 temp2 = c(temp,temp1)
@@ -70,4 +70,14 @@ adf.test(temp.ts2)
 #Third Order Difference
 temp.ts3<-diff(temp.ts2)
 acf(temp.ts3)
+temp.ts3
 adf.test(temp.ts3)
+
+#Logarithm Transformation
+temp.ts.log<-log(temp2.ts)
+acf(temp.ts.log)
+adf.test(temp.ts.log)
+
+
+data<-AirPassengers
+adf.test(data)
