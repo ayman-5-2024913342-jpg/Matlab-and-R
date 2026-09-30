@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 clc;
 close all;
 clear all;
@@ -31,6 +30,8 @@ for i = 1:length(b)
     b_dom(max_cols(i)) = b(i);
 end
 
+A_dom;
+b_dom;
 % Set parameters for iterative methods
 tol = 5e-5; % 5 significant digits (0.5 * 10^(1-5))
 max_iter = 500;
@@ -56,12 +57,21 @@ omega = 1.1;
 fprintf('SOR (omega = 1.1) Solution (%d iterations, Status: %s):\n', iter_sor, status_sor);
 disp(x_sor);
 
+% (d) Additional Table Output via sor_ (omega = 1.2)
+disp('--- Custom SOR Table Output (omega = 1.2) ---');
+x_init = zeros(size(b));
+[x_sor_tbl, iter_tbl, err_tbl, table_data] = sor_(A_dom, b_dom, x_init, 1.2, 700);
+T = array2table(table_data, 'VariableNames', {'iteration','x1','x2','x3','x4','x5', 'error'});
+disp(T);
+disp("The solution:");
+disp(x_sor_tbl);
+
 
 %=================================================================================
-%                               LOCAL FUNCTIONS
+%                          LOCAL FUNCTIONS
 %=================================================================================
 
-function [] = check_eig(a) 
+function check_eig(a) 
     % Positive definiteness requires symmetry: A = A'
     if ~isequal(a, a')
         disp("Matrix A is NOT Positive Definite.");
@@ -78,40 +88,10 @@ function [] = check_eig(a)
 end
 
 function [x, iter, status] = jacobi_method(A, b, x0, tol, max_iter)
-=======
-clc; 
-close all;
-clear all;
-
-A = readmatrix("a.txt");
-b = readmatrix("b.txt");
-
-%======================Part I=================================
-Aug = [A, b];
-R = rref(Aug);
-x_exact = R(:, end)
-
-
-x = [0; 0; 0; 0; 0;]
-
-%====================Part II==================================
-%Diagonally Dominant
-[~,max_cols] = max(abs(A), [] , 2);
-A_dom (max_cols,:) = A;
-b_dom (max_cols) = b;
-
-%ns = jacobi(A, b, zeros(size(b)), 100);   % <- the one fix you need (see below)
-%n = numel(ns);
-jacobi(A,b, 0, 100)
-
-function [x, iter, err] = jacobi(A, b, x0, max_iter)
-    tol = 10^-5;
->>>>>>> f3c9d3c8d02da75f1a2bded44b87d29adb2a484b
     n = length(b);
     D = diag(diag(A));
     LU = A - D;
     x = x0;
-<<<<<<< HEAD
     status = 'Converged';
     
     for iter = 1:max_iter
@@ -187,34 +167,11 @@ function [x, iter, status] = sor_method(A, b, x0, omega, tol, max_iter)
         x = x_new;
     end
     status = 'Max iterations reached';
-=======
-    D = diag(A); 
-    R = A - diag(D);
-    
-    if any(D == 0)
-        error("Zero on diagonal. Reaarange terms.")
-    end
-
-    for iter = 1:max_iter
-       x_new = (b - R*x) ./ D;
-       
-       err = norm(x_new - x, inf);
-        
-       x = x_new;
-
-       if (max(abs(x_new - x) ./ abs(x_new))) < tol
-           return;
-       end
-       
-    end
-end 
-
-%================== Part III =======================================
-gauss_sed(A, b, x, 500)
+end
 
 function [iter, x, err, table_data] = gauss_sed(A, b, x0, max_iter)
     n = length(b);
-    tol = 10e-5;
+    tol = 1e-5;
     x = x0;
 
     table_data = zeros(max_iter + 1, n + 2);
@@ -224,40 +181,24 @@ function [iter, x, err, table_data] = gauss_sed(A, b, x0, max_iter)
         x_old = x;
 
         for i = 1:n
-            
             d = b(i);
-            
             for j = 1:n
                 if i ~= j
                     d = d - A(i,j) * x(j);
                 end
             end
-
             x(i) = d / A(i,i);
         end
         
         err = max(abs(x - x_old));
-
         table_data(iter+1,:) = [iter, x', err];
 
         if err < tol
             break;
         end
-        
     end
     table_data = table_data(1:iter+1,:);
 end
-
-%============================== Part IV %==================================
-x = [0; 0; 0; 0; 0;];
-
-[x, iter, err, table_data] = sor_(A, b, x, 1.2, 700);
-
-T = array2table(table_data, 'VariableNames', {'iteration','x1','x2','x3','x4','x5', 'error'});
-disp(T);
-disp("The solution ")
-disp(x)
-
 
 function [x, iter, err, table_data] = sor_(A, b, x0, w, max_iter)
     n = length(b);
@@ -271,27 +212,21 @@ function [x, iter, err, table_data] = sor_(A, b, x0, w, max_iter)
         x_old = x;
         for i = 1:n
             d = b(i);
-            x_old = x;
-
             for j = 1:n
                 if i ~= j
-                    d = d - A(i,j)*x(j);
+                    d = d - A(i,j) * x(j);
                 end
             end
-
-            x_gs = d/A(i,i);
-            x(i) = (1-w) * x_old(i) + w*x_gs;
-
+            x_gs = d / A(i,i);
+            x(i) = (1 - w) * x_old(i) + w * x_gs;
         end
 
-        err = max(abs(x-x_old));
-        table_data(iter+1,:) = [iter,x',err];
+        err = max(abs(x - x_old));
+        table_data(iter+1,:) = [iter, x', err];
 
         if err < tol
             break;
         end
-
     end
     table_data = table_data(1:iter+1,:);
->>>>>>> f3c9d3c8d02da75f1a2bded44b87d29adb2a484b
 end

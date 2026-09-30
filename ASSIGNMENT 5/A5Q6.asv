@@ -25,34 +25,13 @@ re_ne(end+1:n_max)  = NaN;
 re_sec(end+1:n_max) = NaN;
 re_fal(end+1:n_max) = NaN;
 
-% 1. Run algorithms
-[x_b, re_b]     = bisection(a, b);
-[x_new, re_ne]  = newton(a, b);
-[x_sec, re_sec] = secant(a, b);
-[x_fal, re_fal] = false(a, b);
-
-% 2. Find maximum length
-n_max = max([length(x_b), length(x_new), length(x_sec), length(x_fal)]);
-
-% 3. Pad roots by repeating the final value
-x_b(end+1:n_max)   = x_b(end);
-x_new(end+1:n_max) = x_new(end);
-x_sec(end+1:n_max) = x_sec(end);
-x_fal(end+1:n_max) = x_fal(end);
-
-% 4. Pad errors with 0
-re_b(end+1:n_max)   = 0;
-re_ne(end+1:n_max)  = 0;
-re_sec(end+1:n_max) = 0;
-re_fal(end+1:n_max) = 0;
-
-% 5. NOW create the matrix (or table) AFTER padding is done!
+% Combine results into a single output matrix (optional, for raw data)
 matrix = [x_b(:), x_new(:), x_sec(:), x_fal(:), re_b(:), re_ne(:), re_sec(:), re_fal(:)];
-
-% Optional: Display it cleanly as a Table so you see column names
+n_max = len
+% Create and Display a Formatted Tabular View
 Iteration = (1:n_max)';
 T = table(Iteration, x_b(:), x_new(:), x_sec(:), x_fal(:), re_b(:), re_ne(:), re_sec(:), re_fal(:));
-T.Properties.VariableNames = {'Iteration', 'x_bisection', 'x_newton', 'x_secant', 'x_false', 'err_bisection', 'err_newton', 'err_secant', 'err_false'};
+T.Properties.VariableNames = {'Iteration', 'x_bisec', 'x_newton', 'x_secant', 'x_rfp', 'err_bisec', 'err_newton', 'err_secant', 'err_rfp'};
 
 disp(' ');
 disp('=============================================================================================================');
@@ -64,9 +43,9 @@ disp(T);
 figure;
 plot(1:n_max, re_b, 'r-o', 'LineWidth', 1.5, 'DisplayName', 'Bisection');
 hold on;
-plot(1:n_max, re_ne, 'g-s', 'LineWidth', 1, 'DisplayName', 'Newton-Raphson');
-plot(1:n_max, re_sec, 'b-d', 'LineWidth', 0.5, 'DisplayName', 'Secant');
-plot(1:n_max, re_fal, 'm-^', 'LineWidth', 0.25, 'DisplayName', 'False Position');
+plot(1:n_max, re_ne, 'g-s', 'LineWidth', 1.5, 'DisplayName', 'Newton-Raphson');
+plot(1:n_max, re_sec, 'b-d', 'LineWidth', 1.5, 'DisplayName', 'Secant');
+plot(1:n_max, re_fal, 'm-^', 'LineWidth', 1.5, 'DisplayName', 'False Position');
 hold off;
 
 xlabel('Iteration');
