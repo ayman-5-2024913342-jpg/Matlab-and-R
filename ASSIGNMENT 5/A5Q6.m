@@ -75,7 +75,7 @@ hold off;
 %plot function to do
 
 xlabel('Iteration');
-ylabel('Relative Error (%)');
+ylabel('Error');
 title('Convergence Comparison of Root-Finding Methods');
 legend('Location', 'northeast');
 grid on;
