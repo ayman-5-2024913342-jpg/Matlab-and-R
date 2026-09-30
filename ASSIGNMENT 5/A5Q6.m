@@ -68,6 +68,7 @@ plot(1:n_max, re_ne, 'g-s', 'LineWidth', 1, 'DisplayName', 'Newton-Raphson');
 plot(1:n_max, re_sec, 'b-d', 'LineWidth', 0.5, 'DisplayName', 'Secant');
 plot(1:n_max, re_fal, 'm-^', 'LineWidth', 0.25, 'DisplayName', 'False Position');
 hold off;
+%plot function to do
 
 xlabel('Iteration');
 ylabel('Relative Error (%)');
