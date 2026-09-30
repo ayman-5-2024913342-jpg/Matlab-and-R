@@ -63,6 +63,10 @@ disp(T);
 % Plot Relative Error vs Iteration
 figure;
 plot(1:n_max, re_b, 'r-o', 'LineWidth', 1.5, 'DisplayName', 'Bisection');
+%Font adjustment
+ax = gca;
+ax.FontSize = 14;
+
 hold on;
 plot(1:n_max, re_ne, 'g-s', 'LineWidth', 1, 'DisplayName', 'Newton-Raphson');
 plot(1:n_max, re_sec, 'b-d', 'LineWidth', 0.5, 'DisplayName', 'Secant');
