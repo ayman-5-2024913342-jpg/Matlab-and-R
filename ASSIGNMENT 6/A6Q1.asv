@@ -1,0 +1,21 @@
+clc; close all; clear all;
+
+
+function [iter, x_new, rel] = euler(x0, y0, h, tol)
+    x = x0;
+    y = y0;
+    temp = 0
+    
+    while x0 < x:
+        temp = y
+        y = y + h * f'(x0, y
+    
+end
+
+function y' = f'(t,y)
+    y' = (2 - 2*t*y) / (t^2 + 1);
+end
+
+function y = f(t)
+    y = (2*t + 1) / (t^2 + 2);
+end
