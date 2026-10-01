@@ -1,6 +1,4 @@
-clc; 
-close all;
-clear all;
+clc; close all; clear all;
 
 A = readmatrix("a.txt");
 b = readmatrix("b.txt");
