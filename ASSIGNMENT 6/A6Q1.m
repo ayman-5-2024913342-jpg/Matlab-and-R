@@ -11,6 +11,35 @@ t0 = 0; target_x = 1; y0 = 1;
 plot_euler_results(target_x, t0, y0, step_sizes, colors, f, y_exact_fn);
 
 
+%%======================================================================%%
+%%TODO: have to understand and implement the plot function from scratch%%
+%%=====================================================================%%
+
+dis_result(target_x, t0, y0, step_sizes, f, y_exact_fn);
+
+
+function dis_result(target_x, t0, y0, step_sizes, f, y_exact_fn)
+    for i = 1:length(step_sizes)
+        h = step_sizes(i);
+        
+        [iter, x_history, y_history, final_err] = euler(target_x, t0, y0, h, f, y_exact_fn);
+        
+        fprintf('\n=== TABLE FOR h = %.2f ===\n', h);
+        fprintf('%-10s %-12s %-12s %-12s\n', 't', 'Exact', 'Euler Appr', 'Abs Error');
+        fprintf('%s\n', repmat('-', 1, 48));
+        
+        for k = 1:length(x_history)
+            t_val = x_history(k);
+            y_appr = y_history(k);
+            y_exact = y_exact_fn(t_val);
+            err_val = abs(y_exact - y_appr);
+            
+            fprintf('%-10.2f %-12.6f %-12.6f %-12.6f\n', t_val, y_exact, y_appr, err_val);
+        end
+        fprintf('\n');
+    end
+end
+
 function plot_euler_results(target_x, t0, y0, step_sizes, colors, f, y_exact_fn)
 
 
@@ -41,16 +70,16 @@ function plot_euler_results(target_x, t0, y0, step_sizes, colors, f, y_exact_fn)
     legend('Location', 'southeast', 'FontSize', 10);
     hold off;
 
-    fprintf('\n%-10s %-12s %-12s %-12s %-12s %-12s\n', 't', 'Exact', 'h=0.5', 'h=0.25', 'h=0.1', 'h=0.01');
-    fprintf('%s\n', repmat('-', 1, 72));
+%    fprintf('\n%-10s %-12s %-12s %-12s %-12s %-12s\n', 't', 'Exact', 'h=0.5', 'h=0.25', 'h=0.1', 'h=0.01');
+%    fprintf('%s\n', repmat('-', 1, 72));
     
-    for k = 1:length(t_common)
-        t_val = t_common(k);
-        y_exact = y_exact_fn(t_val);
-        fprintf('%-10.2f %-12.6f %-12.6f %-12.6f %-12.6f %-12.6f\n', ...
-            t_val, y_exact, sol_matrix(k, 1), sol_matrix(k, 2), sol_matrix(k, 3), sol_matrix(k, 4));
-    end
-    fprintf('\n');
+%    for k = 1:length(t_common)
+%        t_val = t_common(k);
+%        y_exact = y_exact_fn(t_val);
+%        fprintf('%-10.2f %-12.6f %-12.6f %-12.6f %-12.6f %-12.6f\n', ...
+%            t_val, y_exact, sol_matrix(k, 1), sol_matrix(k, 2), sol_matrix(k, 3), sol_matrix(k, 4));
+%    end
+%    fprintf('\n');
 end
 
 
@@ -63,10 +92,10 @@ function [iter, x_history, y_history, err] = euler(x, x0, y, h, f, y_exact_fn)
     y_history = y;
 
     while (x - x_new) > 1e-9
-        step = min(h, x - x_new); 
+        %step = min(h, x - x_new); 
         
-        y = y + step * f(x_new, y);
-        x_new = x_new + step; 
+        y = y + h * f(x_new, y);
+        x_new = x_new + h; 
         iter = iter + 1;
 
         x_history(end+1) = x_new; %#ok<AGROW>
