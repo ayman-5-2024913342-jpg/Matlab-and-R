@@ -26,16 +26,16 @@ function dis_result(target_x, t0, y0, step_sizes, f, y_exact_fn)
         [iter, x_history, y_history, final_err] = euler(target_x, t0, y0, h, f, y_exact_fn);
         
         fprintf('\n=== TABLE FOR h = %.2f ===\n', h);
-        fprintf('%-10s %-12s %-12s %-12s\n', 't', 'Exact', 'Euler Appr', 'Abs Error');
+        fprintf('%-10s %-12s %-12s %-12s\n', 't', 'Exact', 'Euler Appr');
         fprintf('%s\n', repmat('-', 1, 48));
         
         for k = 1:length(x_history)
             t_val = x_history(k);
             y_appr = y_history(k);
             y_exact = y_exact_fn(t_val);
-            err_val = abs(y_exact - y_appr);
+            %err_val = abs(y_exact - y_appr);
             
-            fprintf('%-10.2f %-12.6f %-12.6f %-12.6f\n', t_val, y_exact, y_appr, err_val);
+            fprintf('%-10.2f %-12.6f %-12.6f \n', t_val, y_exact, y_appr);
         end
         fprintf('\n');
     end

@@ -35,7 +35,7 @@ hold on; grid on;
 
 % Fine time vector for smooth analytical plot
 t_fine = x0:0.001:x;
-plot(t_fine, f_anal(t_fine), 'k-', 'LineWidth', 2, 'DisplayName', 'Analytical Exact Solution');
+plot(t_fine, f_anal(t_fine), 'm-', 'LineWidth', 2, 'DisplayName', 'Analytical Exact Solution');
 
 % Plot Euler approximation points
 plot(x_history, y_history, 'ro--', 'LineWidth', 1.5, 'MarkerSize', 6, ...
