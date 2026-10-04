@@ -1,101 +1,108 @@
-clc; close all; clear all;
 
-% Problem settings
-x_target = 1;
-x0 = 0;
-y0 = 1;
+clc; clear; close all;
 
-h_vec = [0.5, 0.25, 0.1, 0.01];
-t_common = 0:0.1:1; % Grid for comparison table
+f = @(t,y) (2 - 2*t*y) / (t^2 + 1);
+y_exact_fn = @(t) (2*t + 1) ./ (t.^2 + 1);
 
-% Preallocate storage table (rows = t points, cols = exact + 4 step sizes)
-table_data = NaN(length(t_common), 1 + length(h_vec));
+step_sizes = [0.5, 0.25, 0.1, 0.01];
+colors = ["#D95319", "#EDB120", "#7E2F8E", "#77AC30"];
 
-% Fill exact column
-for i = 1:length(t_common)
-    table_data(i, 1) = f(t_common(i));
-end
+t0 = 0; target_x = 1; y0 = 1;
+
+plot_euler_results(target_x, t0, y0, step_sizes, colors, f, y_exact_fn);
 
 
-% Graphic Plotting Setup
-figure('Position', [100, 100, 800, 500]);
-t_dense = linspace(0, 1, 200);
-plot(t_dense, f(t_dense), 'k-', 'LineWidth', 2, 'DisplayName', 'Exact Solution');
-hold on;
-colors = {'r--o', 'b--s', 'm--^', 'g--.'};
+%%======================================================================%%
+%%TODO: have to understand and implement the plot function from scratch%%
+%%=====================================================================%%
 
-% Solve IVP for each h using your euler function structure
-for k = 1:length(h_vec)
-    h = h_vec(k);
-    
-    % Evaluate trajectory at every step from x0 to x_target
-    t_steps = x0:h:x_target;
-    y_steps = zeros(size(t_steps));
-    
-    for j = 1:length(t_steps)
-        % Call your custom euler function to reach target time point t_steps(j)
-        [~, ~, y_steps(j), ~] = euler(t_steps(j), x0, y0, h);
-    end
-    
-    % Plot trajectory
-    plot(t_steps, y_steps, colors{k}, 'LineWidth', 1.2, ...
-        'MarkerSize', 6, 'DisplayName', sprintf('h = %.2f', h));
-    
-    % Align values onto common table grid
-    for i = 1:length(t_common)
-        idx = find(abs(t_steps - t_common(i)) < 1e-6, 1);
-        if ~isempty(idx)
-            table_data(i, k+1) = y_steps(idx);
+dis_result(target_x, t0, y0, step_sizes, f, y_exact_fn);
+
+
+function dis_result(target_x, t0, y0, step_sizes, f, y_exact_fn)
+    for i = 1:length(step_sizes)
+        h = step_sizes(i);
+        
+        [iter, x_history, y_history, final_err] = euler(target_x, t0, y0, h, f, y_exact_fn);
+        
+        fprintf('\n=== TABLE FOR h = %.2f ===\n', h);
+        fprintf('%-10s %-12s %-12s %-12s\n', 't', 'Exact', 'Euler Appr', 'Abs Error');
+        fprintf('%s\n', repmat('-', 1, 48));
+        
+        for k = 1:length(x_history)
+            t_val = x_history(k);
+            y_appr = y_history(k);
+            y_exact = y_exact_fn(t_val);
+            err_val = abs(y_exact - y_appr);
+            
+            fprintf('%-10.2f %-12.6f %-12.6f %-12.6f\n', t_val, y_exact, y_appr, err_val);
         end
+        fprintf('\n');
     end
 end
 
+function plot_euler_results(target_x, t0, y0, step_sizes, colors, f, y_exact_fn)
 
-xlabel('t', 'FontSize', 12);
-ylabel('y(t)', 'FontSize', 12);
-title('Euler Method Approximations vs Exact Solution', 'FontSize', 14);
-legend('Location', 'NorthWest');
-grid on;
 
-% Display Table Output
-fprintf('\n%8s | %10s | %10s | %10s | %10s | %10s\n', ...
-    't', 'Exact', 'h=0.5', 'h=0.25', 'h=0.1', 'h=0.01');
-fprintf('%s\n', repmat('-', 1, 72));
+    t_common = (t0:0.1:target_x)';
+    sol_matrix = zeros(length(t_common), length(step_sizes));
 
-for i = 1:length(t_common)
-    fprintf('%8.2f | %10.6f | ', t_common(i), table_data(i, 1));
-    for k = 1:length(h_vec)
-        if isnan(table_data(i, k+1))
-            fprintf('%10s | ', '—');
-        else
-            fprintf('%10.6f | ', table_data(i, k+1));
-        end
+    figure('Position', [100, 100, 800, 500]);
+    hold on; grid on;
+
+    t_fine = 0:0.001:target_x;
+    plot(t_fine, y_exact_fn(t_fine), 'k-', 'LineWidth', 2.5, 'DisplayName', 'Exact Solution');
+
+    for i = 1:length(step_sizes)
+        h = step_sizes(i);
+
+        [iter, x_history, y_history, final_err] = euler(target_x, t0, y0, h, f, y_exact_fn);
+
+        sol_matrix(:, i) = interp1(x_history, y_history, t_common, 'linear');
+
+        plot(x_history, y_history, 'o--', 'LineWidth', 1.5, 'MarkerSize', 5, ...
+            'Color', colors(i), ...
+            'DisplayName', sprintf('h = %.2f (Iter: %d, Err: %.4f)', h, iter, final_err));
     end
-    fprintf('\n');
+
+    xlabel('t', 'FontSize', 12);
+    ylabel('y(t)', 'FontSize', 12);
+    title("Euler's Method Approximation vs. Exact Solution", 'FontSize', 14);
+    legend('Location', 'southeast', 'FontSize', 10);
+    hold off;
+
+%    fprintf('\n%-10s %-12s %-12s %-12s %-12s %-12s\n', 't', 'Exact', 'h=0.5', 'h=0.25', 'h=0.1', 'h=0.01');
+%    fprintf('%s\n', repmat('-', 1, 72));
+    
+%    for k = 1:length(t_common)
+%        t_val = t_common(k);
+%        y_exact = y_exact_fn(t_val);
+%        fprintf('%-10.2f %-12.6f %-12.6f %-12.6f %-12.6f %-12.6f\n', ...
+%            t_val, y_exact, sol_matrix(k, 1), sol_matrix(k, 2), sol_matrix(k, 3), sol_matrix(k, 4));
+%    end
+%    fprintf('\n');
 end
 
 
-function [iter, x_new, y, err] = euler(x, x0, y0, h)
+function [iter, x_history, y_history, err] = euler(x, x0, y, h, f, y_exact_fn)
+
+    x_new = x0;      
     iter = 0;
-    x_new = x0;
-    y = y0;
-    
-    while abs(x_new - x) >  1e-9
-        y = y + h * f_anal(x_new, y);
+
+    x_history = x_new;
+    y_history = y;
+
+    while (x - x_new) > 1e-9
+        %step = min(h, x - x_new); 
+        
+        y = y + h * f(x_new, y);
+        x_new = x_new + h; 
         iter = iter + 1;
-        x_new = x0 + h * iter;
+
+        x_history(end+1) = x_new; %#ok<AGROW>
+        y_history(end+1) = y;     %#ok<AGROW>
     end
-    
-    exact_sol = f(x);
-    err = abs(y - exact_sol);
-end
 
-function y = f(t)
-    % Exact analytical solution matching ODE
-    y = (2*t + 1) ./ (t.^2 + 1);
-end
-
-function y_prime = f_anal(t, y)
-    % ODE derivative dy/dt = (2 - 2*t*y) / (t^2 + 1)
-    y_prime = (2 - 2*t*y) ./ (t.^2 + 1);
+    exact_sol = y_exact_fn(x_new);
+    err = abs(exact_sol - y);
 end

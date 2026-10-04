@@ -1,208 +1,221 @@
 clc;
-clear;
+clear all;
 close all;
 
-%% Function
-f = @(x) x^3 - x - exp(x) - 2;
-
-%% Initial values
+% Initial interval
 a = 2;
 b = 3;
 
-% Secant initial guesses
-x0 = 2;
-x1 = 3;
+% Run root-finding algorithms
+[x_b, re_b]     = bisection(a, b);
+[x_new, re_ne]  = newton(a, b);
+[x_sec, re_sec] = secant(a, b);
+[x_fal, re_fal] = false(a, b);
 
-% Number of iterations
-N = 25;
+% Pad vectors with NaN to match maximum iteration length
+n_max = max([length(x_b), length(x_new), length(x_sec), length(x_fal)]);
 
-% Tolerance
-tol = 1e-6;
+x_b(end+1:n_max)    = NaN;
+x_new(end+1:n_max)  = NaN;
+x_sec(end+1:n_max)  = NaN;
+x_fal(end+1:n_max)  = NaN;
 
+re_b(end+1:n_max)   = NaN;
+re_ne(end+1:n_max)  = NaN;
+re_sec(end+1:n_max) = NaN;
+re_fal(end+1:n_max) = NaN;
 
-%% Storage
+% 1. Run algorithms
+[x_b, re_b]     = bisection(a, b);
+[x_new, re_ne]  = newton(a, b);
+[x_sec, re_sec] = secant(a, b);
+[x_fal, re_fal] = false(a, b);
 
-x_bisec = zeros(N,1);
-x_secant = zeros(N,1);
-x_rfp = zeros(N,1);
+% 2. Find maximum length
+n_max = max([length(x_b), length(x_new), length(x_sec), length(x_fal)]);
 
-error_bisec = zeros(N,1);
-error_secant = zeros(N,1);
-error_rfp = zeros(N,1);
+% 3. Pad roots by repeating the final value
+x_b(end+1:n_max)   = x_b(end);
+x_new(end+1:n_max) = x_new(end);
+x_sec(end+1:n_max) = x_sec(end);
+x_fal(end+1:n_max) = x_fal(end);
 
+% 4. Pad errors with 0
+re_b(end+1:n_max)   = 0;
+re_ne(end+1:n_max)  = 0;
+re_sec(end+1:n_max) = 0;
+re_fal(end+1:n_max) = 0;
 
-%% =========================================================
-%                    BISECTION METHOD
-% ==========================================================
+% 5. NOW create the matrix (or table) AFTER padding is done!
+matrix = [x_b(:), x_new(:), x_sec(:), x_fal(:), re_b(:), re_ne(:), re_sec(:), re_fal(:)];
 
-a_b = a;
-b_b = b;
-
-for i = 1:N
-
-    % Midpoint
-    c = (a_b + b_b)/2;
-
-    x_bisec(i) = c;
-
-    % Error
-    if i == 1
-        error_bisec(i) = NaN;
-    else
-        error_bisec(i) = abs(x_bisec(i) - x_bisec(i-1));
-    end
-
-    % Check interval
-    if f(a_b)*f(c) < 0
-        b_b = c;
-    else
-        a_b = c;
-    end
-
-end
-
-
-%% =========================================================
-%                     SECANT METHOD
-% ==========================================================
-
-xs0 = x0;
-xs1 = x1;
-
-for i = 1:N
-
-    % Secant formula
-    xs2 = xs1 - f(xs1)*(xs1-xs0)/(f(xs1)-f(xs0));
-
-    x_secant(i) = xs2;
-
-    % Error
-    if i == 1
-        error_secant(i) = NaN;
-    else
-        error_secant(i) = abs(x_secant(i) - x_secant(i-1));
-    end
-
-    % Update
-    xs0 = xs1;
-    xs1 = xs2;
-
-end
-
-
-%% =========================================================
-%                  REGULA-FALSI METHOD
-% ==========================================================
-
-a_r = a;
-b_r = b;
-
-for i = 1:N
-
-    % Regula-Falsi formula
-    c = (a_r*f(b_r) - b_r*f(a_r)) / ...
-        (f(b_r) - f(a_r));
-
-    x_rfp(i) = c;
-
-    % Error
-    if i == 1
-        error_rfp(i) = NaN;
-    else
-        error_rfp(i) = abs(x_rfp(i) - x_rfp(i-1));
-    end
-
-    % Update interval
-    if f(a_r)*f(c) < 0
-        b_r = c;
-    else
-        a_r = c;
-    end
-
-end
-
-
-%% =========================================================
-%                       TABLE
-% ==========================================================
-
-Iteration = (1:N)';
-
-T = table(Iteration, ...
-          x_bisec, ...
-          x_secant, ...
-          x_rfp, ...
-          error_bisec, ...
-          error_secant, ...
-          error_rfp);
-
-T.Properties.VariableNames = { ...
-    'Iteration', ...
-    'x_bisec', ...
-    'x_secant', ...
-    'x_rfp', ...
-    'error_bisec', ...
-    'error_secant', ...
-    'error_rfp'};
+% Optional: Display it cleanly as a Table so you see column names
+Iteration = (1:n_max)';
+T = table(Iteration, x_b(:), x_new(:), x_sec(:), x_fal(:), re_b(:), re_ne(:), re_sec(:), re_fal(:));
+T.Properties.VariableNames = {'Iteration', 'x_bisection', 'x_newton', 'x_secant', 'x_false', 'err_bisection', 'err_newton', 'err_secant', 'err_false'};
 
 disp(' ');
-disp('==============================================================');
-disp('                 ITERATION TABLE');
-disp('==============================================================');
-
+disp('=============================================================================================================');
+disp('                                    ROOT-FINDING METHODS ITERATION TABLE');
+disp('=============================================================================================================');
 disp(T);
 
-
-%% =========================================================
-%                 ROOTS AFTER N ITERATIONS
-% ==========================================================
-
-fprintf('\n');
-fprintf('Approximate roots after %d iterations:\n', N);
-
-fprintf('Bisection     = %.10f\n', x_bisec(N));
-fprintf('Secant        = %.10f\n', x_secant(N));
-fprintf('Regula-Falsi  = %.10f\n', x_rfp(N));
-
-
-%% =========================================================
-%                  CHECK 6 DECIMAL PLACES
-% ==========================================================
-
-fprintf('\nRoots correct to 6 decimal places:\n');
-
-fprintf('Bisection     = %.6f\n', x_bisec(N));
-fprintf('Secant        = %.6f\n', x_secant(N));
-fprintf('Regula-Falsi  = %.6f\n', x_rfp(N));
-
-
-%% =========================================================
-%                     ERROR PLOT
-% ==========================================================
-
+% Plot Relative Error vs Iteration
 figure;
-
-semilogy(Iteration, error_bisec, '-o', ...
-    'LineWidth', 1.5);
+plot(1:n_max, re_b, 'r-o', 'LineWidth', 1.5, 'DisplayName', 'Bisection');
+%Font adjustment
+ax = gca;
+ax.FontSize = 14;
 
 hold on;
-
-semilogy(Iteration, error_secant, '-s', ...
-    'LineWidth', 1.5);
-
-semilogy(Iteration, error_rfp, '-^', ...
-    'LineWidth', 1.5);
-
-grid on;
+plot(1:n_max, re_ne, 'g-s', 'LineWidth', 1, 'DisplayName', 'Newton-Raphson');
+plot(1:n_max, re_sec, 'b-d', 'LineWidth', 0.5, 'DisplayName', 'Secant');
+plot(1:n_max, re_fal, 'm-^', 'LineWidth', 0.25, 'DisplayName', 'False Position');
+hold off;
+%plot function to do
 
 xlabel('Iteration');
 ylabel('Error');
+title('Convergence Comparison of Root-Finding Methods');
+legend('Location', 'northeast');
+grid on;
 
-title('Convergence of Root-Finding Methods');
 
-legend('Bisection', ...
-       'Secant', ...
-       'Regula-Falsi', ...
-       'Location','best');
+%% =========================================================================
+%                             LOCAL FUNCTIONS
+% =========================================================================
 
-hold off;
+function y = f(x)
+    y = x^3 - x - exp(x) - 2;
+end
+
+function dy = df(x)
+    dy = 3*x^2 - 1 - exp(x);
+end
+
+function [x_b, re_b] = bisection(a, b)
+    i = 1;
+    tol = 1e-5;
+    FA = f(a);
+    po = 0;
+    x_b = [];
+    re_b = [];
+    
+    if (f(a) * f(b)) < 0
+        while i <= 100
+            p = a + (b - a)/2;
+            FP = f(p);
+            re_b(i) = abs((p - po)/p) * 100;
+            x_b(i) = p;
+            
+            if FP == 0 || abs((b - a)/2) < tol
+                break;
+            end
+            
+            i = i + 1;
+            if (FA * FP) > 0 
+                a = p;
+            else
+                b = p;
+            end
+            po = p;
+        end
+    elseif (f(a) * f(b)) >= 0
+        disp('Bisection not possible: f(a) and f(b) must have opposite signs.');
+    end
+end
+
+function [x_new, re_ne] = newton(a, b)
+    i = 1;
+    tol = 1e-5;
+    p0 = (a + b)/2;
+    x_new = [];
+    re_ne = [];
+    
+    if df(p0) == 0
+        return;
+    else
+        while i <= 100
+            p = p0 - f(p0)/df(p0);
+            re_ne(i) = abs((p - p0)/p) * 100;
+            x_new(i) = p;
+            
+            if abs(p0 - p) < tol
+                break;
+            end
+            
+            i = i + 1;
+            p0 = p;
+        end
+    end
+end
+
+function [x_sec, re_sec] = secant(a, b)
+    i = 1;
+    tol = 1e-5;
+    x_sec = [];
+    re_sec = [];
+    
+    if df(a) < df(b)
+        p1 = a;
+        p0 = b;
+    else
+        p1 = b;
+        p0 = a;
+    end
+    
+    q0 = f(p0);
+    q1 = f(p1);
+    
+    while i <= 100
+        q0 = f(p0);
+        q1 = f(p1);
+        if (q1 - q0) == 0
+            break;
+        end
+        
+        p = p1 - q1 * (p1 - p0) / (q1 - q0);
+        re_sec(i) = abs((p - p1)/p) * 100;
+        x_sec(i) = p;
+        
+        if abs(p - p1) < tol
+            %fprintf('Secant Output: %f\n', p);
+            break;
+        end
+        
+        i = i + 1;
+        p0 = p1;
+        p1 = p;
+    end
+end
+
+function [x_fal, re_fal] = false(a, b)
+    tol = 1e-5;
+    i = 1;
+    p0 = a;
+    p1 = b;
+    q0 = f(p0);
+    q1 = f(p1);
+    x_fal = [];
+    re_fal = [];
+    
+    while i <= 100
+        p = p1 - q1 * (p1 - p0) / (q1 - q0);
+        re_fal(i) = abs((p - p1)/p) * 100;
+        x_fal(i) = p;
+        
+        if abs(p - p1) < tol
+            break;
+        end
+        
+        i = i + 1;
+        q = f(p);
+        
+        if q * q1 < 0 
+            p0 = p1;
+            q0 = q1;
+        end
+        p1 = p;
+        q1 = q;
+    end
+end

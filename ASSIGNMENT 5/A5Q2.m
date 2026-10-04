@@ -1,6 +1,6 @@
-clc 
-close all
-clear all
+clc; 
+close all;
+clear all;
 
 args = [pi/4, pi, -pi];
 for i = 1:3
