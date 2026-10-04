@@ -19,7 +19,7 @@ plot_euler_results(target_x, t0, y0, step_sizes, colors, f, y_exact_fn);
 dis_result(target_x, t0, y0, step_sizes, f, y_exact_fn);
 
 
-function dis_result(target_x, t0, y0, step_sizes, f, y_exact_fn)
+function  dis_result(target_x, t0, y0, step_sizes, f, y_exact_fn)
     for i = 1:length(step_sizes)
         h = step_sizes(i);
         

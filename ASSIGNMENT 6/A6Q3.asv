@@ -13,19 +13,6 @@ h = 0.1;
 % Solve using custom euler function
 [iter, x_history, y_history, err] = euler(x, x0, y, h, f, f_anal);
 
-
-%%===========================================================
-%ODE45 Function
-[t_ode, y_ode] = ode45(f, [1:h:2], 1);
-
-%%===========================================================
-exact_sol = f_anal(2);
-
-%%=============================================================
-%RK -2
-
-
-
 % Print results table
 fprintf('Iteration count: %d\n', iter);
 fprintf('Final error at x = %.2f: %.6f\n\n', x_history(end), err);
@@ -39,7 +26,7 @@ for k = 1:length(x_history)
     y_exact = f_anal(t_val);
     err_val = abs(y_exact - y_appr);
     
-    %fprintf('%-10.2f %-12.6f %-12.6f %-12.6f\n', t_val, y_exact, y_appr, err_val);
+    fprintf('%-10.2f %-12.6f %-12.6f %-12.6f\n', t_val, y_exact, y_appr, err_val);
 end
 
 % ---------------- Plotting Both Curves on Same Graph ----------------
@@ -59,6 +46,15 @@ ylabel('y(t)', 'FontSize', 12);
 title("Oiler Method vs Analytical Solution", 'FontSize', 14);
 legend('Location', 'best', 'FontSize', 11);
 hold off;
+
+
+%%===========================================================
+%ODE45 Function
+[t_ode, y] = ode45(f, [1:h:2], 1);
+
+%%===========================================================
+exact_sol = f_anal(2);
+
 
 %%===========================================================
 %OILED UP METHOD
