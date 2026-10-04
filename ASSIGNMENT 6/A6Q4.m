@@ -1,0 +1,97 @@
+clc; close all; clear all;
+
+% Function definitions
+f_prime = @(t,y) (y/t - (y/t).^2);
+f_anal = @(t) (t ./ (1 + log(t)));
+
+x0 = 1;
+y0 = 1;
+x = 2;
+y = 1;
+h = 0.1;
+t_steps = [1:h:2];
+N = length(t_steps);
+
+%=====================================================
+exact_sol = f_anal(2);
+
+%======================================================
+% Solve using ODE45
+[t_ode, y_ode] = ode45(f_prime, [1:h:2], y0);
+error_ode = abs(exact_sol - y_ode);
+% Solve using Oiled up method
+[iter, x_history, y_history, error] = euler(x, x0, y0, h, f_prime, f_anal); %forgot to pass functions as arguments
+% Solve using the RK-2 method
+[y_rk2, error_rk2] = RK_2(N, t_steps, y0, h, f_anal, f_prime);
+% Solve using the RK-4 method
+[y_rk4, error_rk4] = RK_4(N, t_steps, y0, h, f_anal, f_prime);
+
+%======================================================
+% Display Result
+fprintf("%-6s %-12s %-14s %-14s %-14s %-14s\n", ...
+    "t", "Exact", "Error Ode45", "Error Euler", "Error Rk2", "Error Rk4");
+for i = 1:N
+    fprintf("%-6.1f %-12.6f %-14.6e %-14.6e %-14.6e %-14.6e\n", ...
+        t_steps(i), f_anal(t_steps(i)), error_ode(i), error(i), error_rk2(i), error_rk4(i));
+end
+
+%=======================================================
+% Oiled Up Method
+function [iter, x_history, y_history, error] = euler(x_target, x0, y0, h, f_prime, f_anal)
+    x_history = x0;
+    y_history = y0;
+    iter = 0;
+    x = x0;
+    y = y0;
+    error = abs(f_anal(x0) - y0);
+    
+
+    while x < x_target - 1e-9
+        iter = iter + 1;
+        y = y + h * f_prime(x,y);
+        x = x + h;
+        
+        exact = f_anal(x);
+        x_history(iter + 1) = x;
+        y_history(iter + 1) = y;
+        error(iter + 1) = abs(exact - y);
+    end
+end
+
+%========================================================
+% RK-2 Method
+function [y_rk2, error_rk2] = RK_2(N, t_steps, y0, h, f_anal, f_prime)
+    y_rk2 = zeros(N, 1);
+    y_rk2(1) = y0;
+    error_rk2(1) = abs(y_rk2(1) - f_anal(t_steps(1)));
+
+    for i = 1:length(t_steps)-1
+        exact = f_anal(t_steps(i+1));
+
+        k1 = f_prime(t_steps(i), y_rk2(i));
+        k2 = f_prime(t_steps(i) + h, y_rk2(i) + h * k1);
+        y_rk2(i+1) = y_rk2(i) + (h/2) * (k1 + k2); 
+
+        error_rk2(i + 1) = abs(y_rk2(i+1) - exact);
+    end
+end
+
+%========================================================
+% RK-4 Method
+function [y_rk4, error_rk4] = RK_4(N, t_steps, y0, h, f_anal, f_prime)
+    y_rk4 = zeros(N, 1);
+    y_rk4(1) = y0;
+    error_rk4 = abs(y_rk4 - t_steps(1));
+
+    for i = 1:length(t_steps)-1
+        exact = f_anal(t_steps(i+1));
+        
+        k1 = h * f_prime(t_steps(i), y_rk4(i));
+        k2 = h * f_prime(t_steps(i) + h/2, y_rk4(i) + k1/2);
+        k3 = h * f_prime(t_steps(i) + h/2, y_rk4(i) + k2/2);
+        k4 = h * f_prime(t_steps(i) + h, y_rk4(i) + k3);
+
+        y_rk4(i) = y_rk4(i) + h * 1/6 * (k1 + 2*k2 + 2*k3 + k4);
+        error_rk4(i+1) = abs(exact - y_rk4(i+1));
+    end
+end
