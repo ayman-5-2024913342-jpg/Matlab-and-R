@@ -1,3 +1,5 @@
+clc; close all; clear all;
+
 % Given data
 t = [0, 1, 3, 4, 6, 7, 9];
 NB = [500, 600, 1000, 1400, 2100, 2700, 4100];
@@ -53,7 +55,7 @@ fprintf('Cubic Spline Interpolation: %.2f\n', NB_spline_5);
 fprintf('PCHIP Interpolation: %.2f\n', NB_pchip_5);
 
 % Evaluate dense curves for plotting
-y_linear = interp1(t, NB, t_dense, 'linear');
+y_linear = 	(t, NB, t_dense, 'linear');
 y_spline = spline(t, NB, t_dense);
 y_pchip = pchip(t, NB, t_dense);
 

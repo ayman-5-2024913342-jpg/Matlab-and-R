@@ -36,3 +36,7 @@ cortest.bartlett(cor(data), n = nrow(data))
 R <- cor(data)
 eig <- eigen(R)
 eig
+
+fit <- fa(data, nfactor=1, fm="ml")
+fit ##what does the output mean???
+fit$loadings

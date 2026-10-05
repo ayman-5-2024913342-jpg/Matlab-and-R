@@ -9,7 +9,8 @@ y_prime = @(t,y) (2 - 2*t*y) ./ (t^2 + 1);
 h_vals = [0.5, 0.25, 0.1, 0.01];
 t0 = 0; y0 = 1;
 
-
+disp("[Comparison]")
+fprintf("\n")
 % Print the overall Table Header
 fprintf("%-6s    %-10s    %-10s    %-10s    %-10s\n", 'h', 'Total_Iter', 'Exact_Val', 'Approx_Val', 'Abs_Error');
 fprintf("-----------------------------------------------------------------\n");
@@ -25,7 +26,9 @@ for i = 1:length(h_vals)
             h_vals(i), iter, exact, final_y, err);
 end
 
-disp("New method")
+
+fprintf("\n")
+disp("[Detailed Table]")
 for i = 1:length(h_vals)
 
     current_h = h_vals(i); % Changed name to avoid variable collisions

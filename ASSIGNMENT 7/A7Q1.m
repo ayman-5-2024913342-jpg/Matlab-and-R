@@ -1,9 +1,4 @@
 clc; close all; clear all;
-
-function y = f(x)
-    y = 0.6.*x.^3*exp(-0.47.*x) + 1.5.*x.^2*exp(-0.6.*x);
-end
-
 %==================== a ===============================
 disp('================= a =====================')
 y_2 = f(-2);
@@ -19,3 +14,8 @@ title("Plot of y(x)")
 xlabel("y")
 ylabel("y(x)")
 grid on;
+
+
+function y = f(x)
+    y = 0.6.*x.^3*exp(-0.47.*x) + 1.5.*x.^2*exp(-0.6.*x);
+end
