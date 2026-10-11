@@ -12,7 +12,6 @@ which(is.na(weather_data$Humidity))
 which(is.na(weather_data$Rainfall))
 
 #PART II
-
 mean_humidity <- mean(weather_data$Humidity, na.rm=TRUE)
 mean_rainfall <- mean(weather_data$Rainfall, na.rm=TRUE)
 
@@ -23,7 +22,6 @@ weather_data$Rainfall[which(is.na(weather_data$Rainfall))] <- mean_rainfall
 print(weather_data)
 
 #PART III
-
 weather_data$Extreme <- ifelse(weather_data$Rainfall > 80, "YES", "NO")
 extreme_stations = weather_data$Station[weather_data$Extreme == "YES"]
 print(extreme_stations)
@@ -37,3 +35,21 @@ print(percentage_of_stations_w_extreme_rainfall)
 #PART IV
 sorted_weather <- weather_data[order(weather_data$Rainfall, decreasing=TRUE), ]
 print(sorted_weather)
+
+#PART V
+hist(weather_data$Humidity, main="Distribution of humidity", xlab = "Humidity (%)", col = "skyblue")
+barplot(table(weather_data$Extreme), main = "Extreme Rainfall", xlab = "Extreme (>80 mm)", ylab = "Count", col = c("lightgreen", "blue"))
+
+#PART VI
+plot(weather_data$Humidity, weather_data$Rainfall, main = "Humidity vs Rainfall", xlab = "Humidity (%)", ylab = "Rainfall (mm)", pch = 19, col = "blue")
+cor_value <- cor(weather_data$Humidity, weather_data$Rainfall, method = "pearson")
+print(cor_value)
+
+#PART VII
+model = lm(Rainfall ~ Humidity, data = weather_data)
+summary(model)
+
+#PART IX
+new_data <- data.frame(Humidity = c(80, 30))
+predictions = predict(model, newdata = new_data)
+print(predictions)
