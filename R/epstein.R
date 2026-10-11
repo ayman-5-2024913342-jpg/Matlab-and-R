@@ -65,3 +65,5 @@ model
 
 abline(model, col="red")
 summary(model)
+
+print("hello from R")
