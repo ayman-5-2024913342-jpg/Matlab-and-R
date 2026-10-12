@@ -15,3 +15,9 @@ print(data_monthly)
 data_monthly$rain_cat = c("Low", "Medium", "Heavy")
 data_monthly$rain_cat = ifelse(data_monthly$Rainfall < 50, "Low", ifelse(data_monthly$Rainfall < 150, "Medium", "Heavy"))
 print(data_monthly)
+
+print(table(data_monthly$rain_cat))
+
+#PART IV
+barplot(data_monthly$Wind, names.arg=data_monthly$Month, col = "blue", main="Rainfall by Month", xlab = "Month", ylab="Rainfall (mm)")
+barplot(table(data_monthly$rain_cat), col = c("red", "green", "blue"), main = "Rainfall based on catagory", xlab = "Catagory", ylab = "Rainfall")
