@@ -21,3 +21,16 @@ print(table(data_monthly$rain_cat))
 #PART IV
 barplot(data_monthly$Wind, names.arg=data_monthly$Month, col = "blue", main="Rainfall by Month", xlab = "Month", ylab="Rainfall (mm)")
 barplot(table(data_monthly$rain_cat), col = c("red", "green", "blue"), main = "Rainfall based on catagory", xlab = "Catagory", ylab = "Rainfall")
+
+#PART V
+rain_cat_by_month = table(data_monthly$Month, data_monthly$rain_cat)
+print(rain_by_month)
+
+#PART VI
+plot(data_monthly$Wind, data_monthly$Rainfall, main = "Rainfall by Wind", xlab = "Wind (ms)", ylab="Rainfall", pch=13, col="black")
+
+#PART VII
+cor_val = cor(data_monthly$Humidity, data_monthly$Rainfall)
+print(cor_val)
+
+#Extras
