@@ -1,10 +1,6 @@
-<<<<<<< HEAD
-clc; close all; clear all;
-=======
 clc;
 close all;
 clear all;
->>>>>>> 4e1842339577a754266806130ca441383f57c939
 
 %% Step 1: Load Data
 A = readmatrix("a.txt");
