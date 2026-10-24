@@ -27,7 +27,7 @@ function course_grade = compute_course_grade(hw, midterms, final_exam, scale_fac
     
     hw_score = (avg_hw / scale_factor) * 20;
     hw_component = hw_score;
-    R
+    
     avg_mid = mean(midterms);
     
     if avg_mid >= final_exam
