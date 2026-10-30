@@ -49,7 +49,6 @@ library(tseries)
 adf.test(data)
 
 #remove trend
-
 time_index <- 1:length(temp.ts)
 trend_model <- lm(temp.ts ~ time_index)
 summary(trend_model)
