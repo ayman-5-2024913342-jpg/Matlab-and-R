@@ -48,4 +48,65 @@ acf(
 dev.off()
 
 # III) ======================
-rain
+rain_decom <- decompose(rain_ts, type = "multiplicative")
+
+png("Rainfall decomp.png", width=600, height=600)
+plot(rain_decom)
+dev.off()
+
+trend_component <- rain_decom$trend
+seasonal_component <- rain_decom$seasonal
+random_component <- rain_decom$random
+
+print(trend_component)
+print(seasonal_component)
+print(random_component)
+
+# IV) =======================
+library(tseries)
+library(zoo)
+
+adf.test(rain_ts)
+
+# V) ========================
+rain_diff <- diff(rain_ts)
+
+png("First-Differenced Monthly Rainfall.png", width=800, height=800)
+plot(
+	rain_diff,
+	main = "First-Differenced Monthly Rainfalll",
+	xlab = "Year",
+	ylab = "Change in Rainfall (mm)",
+	col = "blue",
+	type = "o"
+)
+adf.test(rain_diff)
+dev.off()
+
+dates <- as.Date(as.yearmon(time(rain_diff)))
+
+png("First-Differenced_Monthly_Rainfall_with_month_names.png", width = 800, height = 800)
+
+plot(
+  rain_diff,
+  main = "First-Differenced Monthly Rainfall",
+  xlab = "Month",
+  ylab = "Change in Rainfall (mm)",
+  col = "blue",
+  type = "o",
+  xaxt = "n"
+)
+
+axis(
+  side = 1,
+  at = time(rain_diff),
+  labels = format(dates, "%b %y"),
+  las = 2 
+)
+
+dev.off()
+
+adf.test(rain_diff)
+
+
+
