@@ -8,8 +8,8 @@ n_values = [5, 10, 40, 45, 55];
 print_prog(n_values)
 
 
-v = [1 2 3 6 9]
-disp(v(0))
+%v = [1 2 3 6 9]
+%disp(v(0));
 
 function p = print_prog(n_values)
     disp("First func")
