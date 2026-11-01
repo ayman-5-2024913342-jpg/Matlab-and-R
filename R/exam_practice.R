@@ -20,6 +20,11 @@ mean_rainfall <- mean(data_weather$Rainfall, na.rm=TRUE)
 data_weather$Humidity[which(is.na(data_weather$Humidity))] = mean_humidity
 data_weather$Rainfall[which(is.na(data_weather$Rainfall))] = mean_rainfall
 
+#Extreme Heat
+data_weather$hightemp <- ifelse(data_weather$Temperature > 30, "Yes", "No")
+stations_with_extreme_heat <- data_weather$Regions[data_weather$hightemp == "Yes"]
+length(data_weather$Regions[data_weather$hightemp == "No"]) / length((Regions)) * 100
+
 stations <- paste0("S", 1:10)
 temp <- c(20, 25, 27, 28, 26, 32, 32, 35, 30, 29)
 hum <- c(65, 65, 72, 68, 65, 75, 70, 85, 65, 67)
